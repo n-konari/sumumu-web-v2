@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>注目のエリア | すむむ。【Figma用】</title>
+<!-- ★ Figma取り込み用：スライダーを全件展開 -->
+<style>
+  /* 全スライドを表示 */
+  .voice-slide { display: block !important; animation: none !important; }
+  /* ナビゲーションを非表示（全件表示時は不要） */
+  .voice-nav { display: none !important; }
+  /* フェードインアニメーション無効 */
+  .fade { opacity: 1 !important; transform: none !important; transition: none !important; }
+  /* overflow解除 */
+  .area-card, .card-body, .card-head { overflow: visible !important; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700&display=block" rel="stylesheet">
+<style>
+/* ─── Design Tokens ───────────────────────────── */
+:root {
+  --red:        #E83535;
+  --red-h:      #C92C2C;
+  --red-pale:   #FDE8E8;
+  --bg:         #F8F5EF;
+  --bg-warm:    #EAE6D8;
+  --footer-bg:  #1C0800;
+  --black:      #1A1A1A;
+  --gray-mid:   #6B6560;
+  --gray-pale:  #CDD3DA;
+  --white:      #FFFFFF;
+  --border:     rgba(26,26,26,0.1);
+  --line:       #06C755;
+  --display:    'Bebas Neue', sans-serif;
+  --body:       'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  --r-card:     20px;
+  --r-pill:     999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--black);
+  background: var(--bg);
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ─── HEADER ─────────────────────────────────── */
+.site-hd {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.hd-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.hd-logo { display: flex; align-items: center; flex-shrink: 0; }
+.hd-logo svg { height: 32px; width: auto; }
+.hd-tagline {
+  font-size: 11px;
+  color: var(--gray-mid);
+  letter-spacing: 0.08em;
+  flex: 1;
+}
+.hd-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.hd-nav a {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.hd-nav a:hover { background: var(--bg); }
+.hd-nav a.active { color: var(--red); font-weight: 700; }
+.hd-nav a.hd-nav-cta {
+  background: var(--line);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  transition: background 0.15s;
+}
+.hd-nav a.hd-nav-cta:hover { background: #05a849; }
+.hd-nav a.hd-nav-cta-red {
+  background: #F97316;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  transition: background 0.15s;
+}
+.hd-nav a.hd-nav-cta-red:hover { background: #ea6c0a; }
+.hamb-circle {
+  display: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border: none;
+  margin-left: auto;
+  transition: background 0.15s;
+}
+.hamb-circle:hover { background: var(--red-h); }
+.hamb-circle span { display: block; width: 18px; height: 2px; background: #fff; border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
+.hamb-circle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamb-circle.open span:nth-child(2) { opacity: 0; }
+.hamb-circle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ─── MOBILE NAV ──────────────────────────────── */
+.mob-nav {
+  position: fixed; top: 64px; right: 0;
+  width: 100%; max-width: 360px;
+  height: calc(100dvh - 64px);
+  background: var(--white);
+  z-index: 299;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  border-left: 1px solid var(--border);
+}
+.mob-nav.open { transform: translateX(0); }
+.mob-inner { padding: 24px 24px 80px; display: flex; flex-direction: column; gap: 2px; }
+.mob-link { display: block; padding: 14px 4px; font-weight: 500; border-bottom: 1px solid var(--border); }
+.mob-link.active { color: var(--red); font-weight: 700; }
+.mob-cta {
+  margin-top: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--line); color: #fff;
+  padding: 14px 24px; border-radius: var(--r-pill);
+  font-weight: 700; font-size: 15px;
+}
+
+/* ─── PAGE HERO ──────────────────────────────── */
+.page-hero {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 40px 56px;
+}
+.page-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--gray-mid);
+  margin-bottom: 24px;
+}
+.hero-breadcrumb a:hover { color: var(--red); }
+.hero-breadcrumb .sep { opacity: 0.4; }
+.hero-top {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+}
+.hero-en {
+  font-family: var(--display);
+  font-size: clamp(72px, 11vw, 140px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+.hero-en span { color: var(--red); }
+.hero-rule {
+  flex: 1;
+  height: 2px;
+  background: var(--black);
+  margin-bottom: 16px;
+  margin-left: 24px;
+}
+.hero-ja {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-mid);
+  letter-spacing: 0.08em;
+  margin-top: 12px;
+}
+.hero-desc {
+  max-width: 560px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--gray-mid);
+  margin-top: 16px;
+}
+
+/* ─── AREA COUNT BAR ──────────────────────────── */
+.count-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+}
+.count-bar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.count-bar-label { font-size: 12px; color: var(--gray-mid); }
+.count-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--red-pale);
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+}
+
+/* ─── GRID ────────────────────────────────────── */
+.areas-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 40px 120px;
+}
+.areas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+/* ─── AREA CARD ───────────────────────────────── */
+.area-card {
+  background: var(--white);
+  border-radius: var(--r-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.area-card:hover {
+  box-shadow: 0 12px 48px rgba(26,26,26,0.12);
+  transform: translateY(-4px);
+}
+
+.card-head {
+  background: var(--black);
+  padding: 28px 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.card-head::before {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 200px; height: 200px;
+  background: var(--red);
+  opacity: 0.06;
+  border-radius: 50%;
+  transform: translate(30%, 30%);
+}
+.card-en {
+  font-family: var(--display);
+  font-size: clamp(36px, 4.5vw, 52px);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+.card-ja-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-ja {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.65);
+}
+.card-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  background: var(--red);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 700;
+}
+.card-count .num { font-family: var(--display); font-size: 22px; line-height: 1; }
+.card-count .zero { opacity: 0.8; }
+
+.card-body {
+  padding: 24px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+/* Badges */
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+}
+
+/* Section labels with icons */
+.card-feature-label,
+.card-info-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.card-feature-label { color: var(--red); }
+.card-info-label { color: var(--black); }
+.s-icon {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.s-icon svg { width: 14px; height: 14px; }
+.card-feature-text {
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--gray-mid);
+}
+
+/* Voice */
+.card-voice {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+}
+.card-voice::before {
+  content: '"';
+  font-family: Georgia, serif;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--red);
+  opacity: 0.2;
+  position: absolute;
+  top: 8px; left: 14px;
+}
+.card-voice-text {
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--black);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding-top: 2px;
+}
+.card-voice-name {
+  font-size: 10px;
+  color: var(--gray-mid);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Card full-width CTA */
+.card-area-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--red);
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: auto;
+  transition: background 0.15s, transform 0.15s;
+}
+.card-area-btn:hover { background: var(--red-h); transform: translateY(-1px); }
+.card-area-btn svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2.5; flex-shrink: 0; }
+.card-count-date { font-size: 10px; color: var(--gray-pale); text-align: right; }
+
+/* Tags */
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.card-tag {
+  font-size: 11px;
+  color: var(--gray-mid);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+}
+
+/* Info grid (education + gourmet) */
+.card-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card-info-box {}
+.card-info-text {
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--gray-mid);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Voice slider */
+.voice-slider { display: flex; flex-direction: column; gap: 8px; }
+.voice-slide {
+  display: none;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.voice-slide.active {
+  display: block;
+  animation: vsFade 0.25s ease;
+}
+@keyframes vsFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.card-voice-text {
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--black);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-voice-name {
+  font-size: 10px;
+  color: var(--gray-mid);
+  margin-top: 5px;
+  font-weight: 500;
+}
+.voice-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+}
+.voice-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.voice-btn:hover { border-color: var(--red); background: var(--red-pale); }
+.voice-btn svg { width: 12px; height: 12px; fill: none; stroke: var(--black); stroke-width: 2; }
+.voice-dots { display: flex; gap: 5px; }
+.v-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gray-pale);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.v-dot.active { background: var(--red); transform: scale(1.3); }
+
+/* ─── JOIN THE COMMUNITY ──────────────────────── */
+.sns-sec {
+  padding: 96px 0;
+  background: var(--red);
+  position: relative;
+  overflow: hidden;
+}
+.sns-sec::before { content: none; }
+.sns-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  text-align: center;
+}
+.sns-en {
+  font-family: var(--display);
+  font-size: clamp(56px, 8vw, 96px);
+  color: #fff;
+  line-height: 0.9;
+  margin-bottom: 16px;
+}
+.sns-ja { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 40px; }
+.sns-btns { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.btn-line-big {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--line);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: var(--r-pill);
+  font-size: 16px;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.15s;
+}
+.btn-line-big:hover { background: #05a849; transform: translateY(-2px); }
+
+/* ─── FOOTER ──────────────────────────────────── */
+.footer {
+  background: var(--footer-bg);
+  color: rgba(255,255,255,0.7);
+  padding: 72px 0 32px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 80px;
+  margin-bottom: 64px;
+}
+.footer-logo { margin-bottom: 16px; }
+.footer-logo svg { height: 28px; }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.8; }
+.footer-sns { display: flex; gap: 12px; margin-top: 20px; }
+.footer-sns a {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.footer-sns a:hover { border-color: var(--red); }
+.footer-sns svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.6); }
+.footer-nav-flat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 4px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.footer-nav-flat a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.footer-nav-flat a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.footer-line { height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 28px; }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+.footer-legal { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-legal a { color: rgba(255,255,255,0.35); transition: color 0.15s; }
+.footer-legal a:hover { color: rgba(255,255,255,0.7); }
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 900px) {
+  .areas-grid { grid-template-columns: 1fr; gap: 24px; }
+  .card-en { font-size: 44px; }
+}
+@media (max-width: 640px) {
+  .hd-nav { display: none; }
+  .hamb-circle { display: flex; }
+  .page-hero { padding: 40px 24px 36px; }
+  .count-bar { padding: 12px 24px; }
+  .areas-main { padding: 40px 24px 80px; }
+  .card-head { padding: 22px 22px 20px; }
+  .card-en { font-size: 38px; }
+  .card-body { padding: 20px 22px 22px; }
+  .footer-top { grid-template-columns: 1fr; gap: 40px; }
+  .footer-inner { padding: 0 24px; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .sns-inner { padding: 0 24px; }
+}
+
+/* ─── FADE IN ─────────────────────────────────── */
+.fade { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.fade.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ════════════════════════════════════ -->
+<header class="site-hd">
+  <div class="hd-inner">
+    <a href="sumumu-main.html" class="hd-logo" aria-label="すむむ。">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" height="32" aria-label="すむむ。">
+        <defs><style>.st0mn{fill:#E83535}</style></defs>
+        <g fill="#1A1A1A" fill-rule="evenodd">
+          <path fill-rule="evenodd" d="M354.2,224.4c-12.7,0-23.1-10.3-23.1-23.1s10.3-23.1,23.1-23.1,23.1,10.3,23.1,23.1-10.3,23.1-23.1,23.1ZM354.2,194.8c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5,6.5-2.9,6.5-6.5-2.9-6.5-6.5-6.5Z"/>
+          <path fill-rule="evenodd" d="M38.4,202.3c.6-.1,1.1.6.6,1.1-1,1.1-2.2,2.4-2.8,3.1-3.4,4-3.9,9.9,0,13.8,3.5,3.5,10.3,4,13.8,0,13.1-15.1,13.3-34.5,12.5-53.5-.4-8.3-1-16.7-1.8-25,0-1.1.8-2.1,1.9-2.1h15.3c5.8,0,10.4-5.1,9.6-11-.6-4.9-5-8.5-10-8.5h-16.3c-2.4,0-3.2-.7-3.3-1.6-.6-3.9-.7-7.9-1.8-11.7-1.5-5.5-6.5-8.4-11.6-7.2-6.3,1.5-8,7.2-7.2,12.4.3,2,.6,4,.9,6s-.7,2.1-1.9,2.1H15.7c-4.9,0-9.4,3.6-10,8.5-.7,5.9,3.9,11,9.6,11h23.9c1,0,1.8.7,1.9,1.7.2,2.1.5,4.3.7,6.4s-.8,1.8-1.8,1.6c-2.8-.6-5.7-.8-8.5-.4-9,1.1-17.2,7.1-21,15.3-3.9,8.2-3.2,18.3,1.6,25.9,4.9,7.6,13.8,12.8,22.8,12.5,1.4,0,2.6-.2,3.6-.4h0ZM43.2,180.1c-.7,1.5-2.2,2.7-3.6,3.5-1.6.8-3.4,1.2-5.2,1-2.4-.2-4.8-1.4-6.3-3.4-1.9-2.5-2.2-6.2-.8-9.1,1.3-2.9,4.2-4.7,7.2-5.2,2.7-.4,6.2.2,8,3,1.8,2.7,2.4,7,.8,10.2h-.1Z"/>
+          <path fill-rule="evenodd" d="M182.1,186.5c-4.4-1.2-9.4,1-11.5,6.5-3.1,8.2-9.6,12.7-17.6,10.5s-9.5-17.9-8.4-27.1c2-16.7,3.4-33.4,3.9-50.1,0-.9.7-1.5,1.6-1.5h14c5.1,0,9.7-3.7,10.2-8.7.6-5.8-4-10.7-9.7-10.7h-14.4c-.9,0-1.6-.7-1.6-1.6,0-5.1-.3-10.2-.6-15.4-.7-11.9-19.4-12-18.7,0,.3,5.1.5,10.2.6,15.3,0,.9-.7,1.6-1.6,1.6h-12.3c-5.1,0-9.7,3.7-10.2,8.7-.6,5.8,4,10.7,9.7,10.7h12.8c.9,0,1.6.7,1.6,1.6-.2,6.4-.4,11.5-.9,17.9,0,1.1-.6,2-1.4,2.6-1.5.9-4,.6-7.2.9-4.8.4-8.2,1.4-11.7,3.4-13.3,7.6-18.2,26.7-11.2,40.1,5.4,10.4,17.7,15.7,29,14.1,1.3-.2,2.5.5,3.1,1.6,5.3,9.9,15.2,16.7,27.3,17.2,15.2.7,29.4-11.4,31.6-26.3.7-5-1.2-10-6.5-11.5v.2ZM129.1,179c-.5,2.1-1.5,4-3.2,5.4-3,2.4-7.8,2.2-10.6-.5-2.4-2.3-3.2-6-2.6-9.3.4-2.5,1.5-5,3.4-6.7,3.5-3.2,9.3-3,11.8,1.2,1,1.7,1.5,3.6,1.6,5.6,0,1.4,0,2.9-.4,4.3h0Z"/>
+          <path d="M297.9,146.9c1.8,3.8,3.9,8,7.8,9.6,4,1.6,9.1-.6,10.7-4.6,1.7-4.4-.3-9.2-2-13.6-1.2-3.2-3-6.9-4.7-10.3-1.9-3.6-4.7-8.3-9-9s-8.1,1-9,5.4c-1.3,6.3,2.6,14.8,6.3,22.5h0Z"/>
+          <path fill-rule="evenodd" d="M309.6,187.8c-.3-5.7-4.6-9.6-9.4-9.7-4.9,0-9.3,3.1-9.3,9.7s-1.3,13.5-7.7,16.5c-3.7,1.8-8.9,1.5-12.7,0-12.2-5-10.3-20.9-10.5-32.3l-.8-59.3c0-1.1.8-1.9,1.9-1.9h10.8c5.1,0,9.7-3.7,10.2-8.7.6-5.8-4-10.7-9.7-10.7h-11.6c-1,0-1.9-.8-1.9-1.9v-12.9c0-4.9-3.5-9.4-8.4-9.8-5.6-.6-10.3,3.9-10.3,9.3v13.4c0,1-.8,1.9-1.8,1.9h-14.4c-5.1,0-9.7,3.7-10.2,8.7-.6,5.8,4,10.7,9.7,10.7h15.2c1,0,1.9.8,1.9,1.9,0,3.2,0,6.4.1,9.5,0,1.2-1,2.1-2.3,2-5.2-.5-10.6.6-15.1,3-8.4,4.6-14.1,13.5-15.5,23-1.7,11.5,3.1,24,12.6,30.8,5.5,3.9,12.5,5.6,19.2,4.9,1.1-.1,2.1.7,2.2,1.8.2,2.1.4,4.1.8,6.2,2.9,17.5,18.3,31.8,36.6,30.4,19.1-1.5,31.5-18,30.3-36.5h.1ZM235.5,165.8c-3.7.2-7.1-1.6-8.7-4.9-1.6-3.3-1.5-7.3-.2-10.8,1-2.7,3.3-5.2,5.9-6.2,3-1.2,6.9-.7,9.4,2,2.9,3.1,3.7,8.3,2.6,12.6-1.4,5.2-5.4,7.1-8.9,7.3h-.1Z"/>
+          <path d="M173.7,158.5s-4.3-8.8-2-14.8c1.1-2.8,3.6-4.5,6.3-4.8,3.4-.4,6.4.7,8.9,4.1,3.9,5.4,8.8,16.2,6.8,23-.9,3-2.7,5.2-5.6,5.9-3.4.9-6.8-.3-9-2.9-2.1-2.3-4.4-8.2-5.4-10.6h0Z"/>
+        </g>
+        <g fill="#1A1A1A">
+          <path d="M22.5,9.9c-1.2,2.9-2.6,6-4.3,8.9v32.2h-5.2v-24.3c-1.2,1.6-2.5,3-3.8,4.3-.5-1.3-1.9-4.3-2.9-5.6,4.4-4.1,8.6-10.7,11.1-17.2l5.1,1.7ZM50.3,44.5v5.2h-29.7v-5.2h12.2v-9.2h-9.7v-5.2h9.7v-8h-11.2v-5.2h13.1c-2.3-1.7-5.2-3.7-7.7-5.1l3.6-3.9c3.4,1.8,8.1,4.6,10.4,6.7l-2,2.3h10.5v5.2h-11.2v8h9.9v5.2h-9.9v9.2h11.9Z"/>
+          <path d="M69.2,12.5c2.6,0,7.5-.2,9.7-.4,1.1,0,2.3-.3,3.1-.6l3.7,2.9c-.6.7-1.2,1.3-1.6,1.9-1.2,2-2.9,6-4.6,9.9,3.6.6,7,1.7,10,2.9,0-.6,0-1.1.1-1.6.1-1.8.1-3.6,0-5l6,.7c-.2,3.1-.4,5.9-.9,8.5,1.9,1.1,3.6,2.2,4.9,3.1l-2.7,6.4c-1.2-1.1-2.5-2.2-4-3.2-2,5.2-5.5,9.2-11.7,12.5l-4.9-4c6.9-3,10.2-7.4,11.7-11.5-3.3-1.8-6.9-3.2-10.9-3.7-1.7,3.9-3.6,8.5-5.2,11-1.8,2.8-4,4-7.2,4s-7.1-2.8-7.1-7.5c0-7.1,6.5-12.6,15.7-13,1.3-3,2.6-6.2,3.7-8.3-1.8,0-5.8.2-7.9.4-.9,0-2.5.2-3.7.4l-.2-5.9c1.2.1,2.8.2,3.8.2ZM65.1,40.2c.9,0,1.6-.5,2.4-1.6,1.2-1.7,2.4-4.6,3.7-7.5-5.2.8-8.1,3.9-8.1,6.8s.9,2.3,1.9,2.3Z"/>
+          <path d="M141.7,22.8c1.9,2.6,4.5,4.8,7.6,6-1.2,1-2.7,2.9-3.5,4.1-3.5-1.7-6.3-4.7-8.3-8.2-1.4,2.3-3.5,4.6-6.7,6.4h11.9v19.8h-5.6v-1.3h-19.9v1.5h-5.3v-19.5c-.8.6-1.7,1.1-2.5,1.6-.7-1.1-2.4-2.8-3.6-3.7,3.9-1.9,6.2-4.3,7.4-6.7h-6.4v-4.3h7.8c.1-.9.2-1.8.2-2.6h-6.5v-4.1h6.5v-3.6h5.2v3.6h5.5v4.1h-5.5c0,.9,0,1.7-.2,2.6h6.3v4.3h-6.1c2,1.5,4.4,3.2,5.7,4.3l-3.5,3.7c-1.2-1.1-3.2-2.9-5.2-4.4-1.1,1.7-2.5,3.3-4.5,4.7h16c-.8-1.1-1.9-2.3-2.9-2.9,3.7-1.4,5.8-3.3,7-5.4h-5.2v-4.3h6.8c.1-.9.2-1.7.2-2.5h0c0-.1-6.3-.1-6.3-.1v-4.1h6.3v-3.6h5.2v3.6h6.9v4.1h-6.9v.2c0,.8,0,1.6-.1,2.4h8.6v4.3h-6.4ZM137.2,35.7h-19.9v2.6h19.9v-2.6ZM137.2,45.1v-2.9h-19.9v2.9h19.9Z"/>
+          <path d="M183.8,26.7c-2.1,1.8-6.4,5.8-7.5,6.9.4,0,1.2.1,1.7.3,1.3.4,2.2,1.4,2.8,3.1.4,1.2.9,3,1.3,4.2.4,1.4,1.4,2.2,3.2,2.2,3.5,0,6.7-.4,9-.8l-.4,6c-1.9.4-6.6.7-9,.7-4.4,0-6.7-1-7.9-4-.5-1.4-1-3.5-1.3-4.7-.5-1.6-1.5-2.2-2.4-2.2s-1.9.7-3,1.8c-1.6,1.6-5,5.4-8.2,9.4l-5.4-3.8c.8-.7,1.9-1.7,3.2-2.9,2.3-2.4,11.8-11.8,16-16.2-3.2,0-8.7.6-11.4.8-1.6.1-3,.4-4,.5l-.6-6.3c1.1,0,2.7.2,4.4.1,2.2,0,12.6-.5,16.4-1,.9,0,2.1-.3,2.6-.5l3.4,3.8c-1.2.8-2.2,1.7-3,2.3ZM185.2,12l-.7,5.4c-4.8-.4-13.4-1.4-18.9-2.3l.9-5.3c5.2,1,14,1.9,18.8,2.3Z"/>
+          <path d="M219.5,16.3c2.3-.4,4.4-.9,6.2-1.5l.2,5.3c-2.1.6-5,1.2-8.1,1.6-2.2,6.4-6.1,14.5-9.8,19.7l-5.6-2.9c3.6-4.5,7.4-11.3,9.4-16.2-.8,0-1.6,0-2.4,0-1.9,0-3.8,0-5.8-.2l-.4-5.3c2,.2,4.4.3,6.1.3s2.8,0,4.2-.2c.6-2.5,1.2-5.3,1.2-7.7l6.3.6c-.4,1.5-1,3.8-1.7,6.3ZM232,30.2c0,1.3.2,3.5.3,5.8,4,1.5,7.2,3.8,9.5,5.9l-3.1,4.9c-1.6-1.5-3.7-3.4-6.2-4.9v.5c0,4.3-2.3,7.6-8.9,7.6s-10.2-2.5-10.2-7.6,3.8-8,10.2-8,2.1,0,3.2.2c-.2-3.4-.4-7.5-.5-10.3h5.8c-.1,1.9,0,3.9,0,5.9ZM222.8,44.7c3.2,0,4.1-1.7,4.1-4.3v-.9c-1.2-.3-2.4-.5-3.7-.5-2.7,0-4.4,1.2-4.4,2.8s1.4,2.9,4,2.9ZM228.8,20.3l2.9-4.6c3.3,1.4,9,4.6,11.4,6.3l-3.3,4.8c-2.7-2.1-7.9-5.1-11-6.5Z"/>
+          <path d="M260,30.1c4.2-3,8.7-4.4,13.6-4.4,8.1,0,12.7,5,12.7,10.5,0,8.4-6.6,14.8-25.8,13.2l-1.7-6c13.8,1.9,21.1-1.5,21.1-7.3s-2.9-5.2-6.9-5.2-9.9,1.9-12.8,5.4c-.8,1-1.3,1.7-1.7,2.7l-5.3-1.3c.9-4.5,2-13.5,2.3-19.2l6.2.9c-.6,2.5-1.4,8.1-1.7,10.8ZM279.8,13.6l-1.4,5.6c-4.6-.6-14.9-2.8-18.5-3.7l1.5-5.5c4.4,1.4,14.4,3.1,18.4,3.6Z"/>
+        </g>
+        <path class="st0mn" d="M390.4,68.9c-6.7-14.7-21.5-23.2-36.3-23.3-14.8,0-29.6,8.6-36.3,23.3-6,13.2-4.4,29.1,1.9,42.1,4.3,8.9,10.5,16.6,16.1,24.7,5.1,7.3,11.6,15.1,16.1,23.1.9,1.6,3.3,1.6,4.2,0,4.5-8,11.1-15.8,16.1-23.1,5.6-8.1,11.8-15.8,16.1-24.7,6.3-13.1,7.9-28.9,1.9-42.1h.2ZM354.2,106c-10.8,0-19.5-8.7-19.5-19.5s8.7-19.5,19.5-19.5,19.5,8.7,19.5,19.5-8.7,19.5-19.5,19.5Z"/>
+      </svg>
+    </a>
+    <span class="hd-tagline">すべての人に、理想の住み替えを。</span>
+    <nav class="hd-nav">
+      <a href="sumumu-main.html">トップ</a>
+      <a href="sumumu-areas.html" class="active">注目のエリア</a>
+      <a href="sumumu-main.html#services">すむむ。のサービス</a>
+      <a href="sumumu-main.html#voices">先輩の声</a>
+      <a href="sumumu-main.html#youtube">YouTube</a>
+      <a href="sumumu-main.html#instagram">Instagram</a>
+      <a href="https://lhcn.li/line/source/666a4239e47623e6c8f711c7" target="_blank" rel="noopener noreferrer" class="hd-nav-cta">すむむ。に参加する</a>
+      <a href="#" class="hd-nav-cta-red">先輩募集</a>
+    </nav>
+    <button class="hamb-circle" id="hambBtn" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mob-nav" id="mobNav">
+  <div class="mob-inner">
+    <a href="sumumu-main.html" class="mob-link">トップ</a>
+    <a href="sumumu-areas.html" class="mob-link active">注目のエリア</a>
+    <a href="sumumu-main.html#services" class="mob-link">すむむ。のサービス</a>
+    <a href="sumumu-main.html#voices" class="mob-link">先輩達の体験記</a>
+    <a href="https://lhcn.li/line/source/666a4239e47623e6c8f711c7" target="_blank" rel="noopener noreferrer" class="mob-cta">
+      すむむ。に参加する
+    </a>
+  </div>
+</div>
+
+<!-- ══ PAGE HERO ══════════════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <nav class="hero-breadcrumb">
+      <a href="sumumu-main.html">トップ</a>
+      <span class="sep">/</span>
+      <span>注目のエリア</span>
+    </nav>
+    <div class="hero-top">
+      <h1 class="hero-en">FEATURED<br><span>AREAS</span></h1>
+      <div class="hero-rule"></div>
+    </div>
+    <p class="hero-ja">注目のエリア</p>
+    <p class="hero-desc">すむむ。が厳選した、住み替えエリアをご紹介。<br>各エリアの特徴・先輩の声・提携物件数を一覧でチェックできます。</p>
+  </div>
+</section>
+
+<!-- ══ COUNT BAR ════════════════════════════════════ -->
+<div class="count-bar">
+  <div class="count-bar-inner">
+    <span class="count-bar-label">現在対応中のエリア</span>
+    <span class="count-tag">4エリア</span>
+    <span class="count-bar-label" style="margin-left:auto; font-size:11px;">物件数は5月22日時点</span>
+  </div>
+</div>
+
+<!-- ══ AREAS GRID ════════════════════════════════════ -->
+<main class="areas-main">
+  <div class="areas-grid">
+
+    <!-- ── 北摂エリア ── -->
+    <article class="area-card fade">
+      <div class="card-head">
+        <div class="card-en">HOKUSETSU</div>
+        <div class="card-ja-row">
+          <span class="card-ja">北摂エリア</span>
+          <span class="card-count"><span class="num zero">0</span>件</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#FDE8E8;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5a3.5 3.5 0 0 0-3.5 3.5c0 2.6 3.5 6.5 3.5 6.5s3.5-3.9 3.5-6.5A3.5 3.5 0 0 0 7 1.5z" fill="#E83535"/><circle cx="7" cy="5" r="1.3" fill="white"/></svg>
+            </span>
+            AREA FEATURES
+          </div>
+          <div class="card-badges">
+            <span class="badge" style="background:#DBEAFE;color:#1E40AF">梅田15分</span>
+            <span class="badge" style="background:#D1FAE5;color:#065F46">教育環境◎</span>
+            <span class="badge" style="background:#DCFCE7;color:#166534">待機児童ゼロ</span>
+            <span class="badge" style="background:#F0FDF4;color:#14532D">緑豊か</span>
+            <span class="badge" style="background:#FEF9C3;color:#713F12">転勤族に優しい</span>
+          </div>
+        </div>
+        <p class="card-feature-text">梅田まで北大阪急行で約15分。豊中・吹田・箕面・高槻など北摂7市1町で、教育・治安・利便が揃う。転勤族が多く、知り合いゼロでも馴染みやすいと評判のエリア。</p>
+        <div class="card-info-grid">
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#EFF6FF;">
+                <svg viewBox="0 0 14 14" fill="none"><polygon points="7,2 13,5.5 7,9 1,5.5" fill="#3B82F6"/><path d="M4 7v3c1 1 1.8 1.3 3 1.3s2-.3 3-1.3V7" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+              </span>
+              EDUCATION
+            </div>
+            <p class="card-info-text">高槻市は2014年4月に保育所待機児童ゼロを達成・以降継続。箕面市立彩都の丘学園（小中一貫校）など教育環境が充実。北野・茨木高校や阪大・関大が集まる学園都市。</p>
+          </div>
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#F0FDF4;">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2 12c1-4 3.5-6 7.5-7C8.5 8.5 6 11 2 12z" fill="#16A34A"/><path d="M2 12l4-5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+              LIFESTYLE
+            </div>
+            <p class="card-info-text">服部緑地・万博公園など緑豊かなスポット周辺に地域密着の名店が充実。豊中・高槻エリアも食文化が豊か。週末は公園やショッピングモールでの家族時間も充実。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#EDE9FE;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7.5L5 11.5V9.5H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z" fill="#7C3AED"/><line x1="4.5" y1="5.5" x2="9.5" y2="5.5" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="7.2" x2="8" y2="7.2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            VOICES
+          </div>
+          <div class="voice-slider">
+            <div class="voice-slide active">
+              <p class="card-voice-text">大阪は治安が悪いイメージでしたが、北摂は転勤者が多く安心して暮らせると教えてもらいました。3年住んで、都会から離れていてうるさくないのに近くに大型商業施設があって買い物にも困らない。子育てしやすいと実感しています。</p>
+              <p class="card-voice-name">けめこさん・30代・豊中市在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">大阪市内では他の人がエレベーターにいたら別の方に乗るくらい交流がなかった。箕面に移り住んでからは、すれ違う度にご挨拶があって、小さな子どもでも「こんにちはー」と声をかけてくれる。それがちょっと嬉しいです。</p>
+              <p class="card-voice-name">りんごさん・30代・箕面市・彩都在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">彩都の丘学園は小中一貫校で、いじめが起きにくいよう踊り場がガラス張りに設計されていて、安心して通わせられそう。都会過ぎない治安の良いエリアで、これから子育てをするにはピッタリの街だと思っています。</p>
+              <p class="card-voice-name">りんごさん・30代・箕面市・彩都在住</p>
+            </div>
+            <div class="voice-nav">
+              <button class="voice-btn voice-prev" aria-label="前へ"><svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg></button>
+              <div class="voice-dots">
+                <span class="v-dot active"></span>
+                <span class="v-dot"></span>
+                <span class="v-dot"></span>
+              </div>
+              <button class="voice-btn voice-next" aria-label="次へ"><svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="card-count-date">物件数：5月22日時点</p>
+        <a href="#" class="card-area-btn">
+          北摂エリアの物件を見る
+          <svg viewBox="0 0 14 14"><polyline points="3,7 11,7"/><polyline points="7,3 11,7 7,11"/></svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── 大阪市内エリア ── -->
+    <article class="area-card fade">
+      <div class="card-head">
+        <div class="card-en">OSAKA CITY</div>
+        <div class="card-ja-row">
+          <span class="card-ja">大阪市内エリア</span>
+          <span class="card-count"><span class="num">8</span>件</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#FDE8E8;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5a3.5 3.5 0 0 0-3.5 3.5c0 2.6 3.5 6.5 3.5 6.5s3.5-3.9 3.5-6.5A3.5 3.5 0 0 0 7 1.5z" fill="#E83535"/><circle cx="7" cy="5" r="1.3" fill="white"/></svg>
+            </span>
+            AREA FEATURES
+          </div>
+          <div class="card-badges">
+            <span class="badge" style="background:#DCFCE7;color:#166534">待機児童ゼロ（2025年）</span>
+            <span class="badge" style="background:#D1FAE5;color:#065F46">医療費18歳まで無料</span>
+            <span class="badge" style="background:#DBEAFE;color:#1E40AF">交通アクセス◎</span>
+            <span class="badge" style="background:#FEE2E2;color:#C42828">資産性高い</span>
+            <span class="badge" style="background:#FEF3C7;color:#92400E">世界9位の住みやすさ</span>
+          </div>
+        </div>
+        <p class="card-feature-text">梅田・なんば・心斎橋・天王寺の4大ターミナルへ電車10分圏内。世界9位の住みやすさ（EIU 2024）。転入超過+16,090人（2024年）、北区地価は上昇継続。</p>
+        <div class="card-info-grid">
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#EFF6FF;">
+                <svg viewBox="0 0 14 14" fill="none"><polygon points="7,2 13,5.5 7,9 1,5.5" fill="#3B82F6"/><path d="M4 7v3c1 1 1.8 1.3 3 1.3s2-.3 3-1.3V7" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+              </span>
+              EDUCATION
+            </div>
+            <p class="card-info-text">保育所待機児童ゼロを初めて達成（2025年4月1日現在）。0〜18歳の医療費を全額助成。公立・私立ともに充実した学校環境。</p>
+          </div>
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#F0FDF4;">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2 12c1-4 3.5-6 7.5-7C8.5 8.5 6 11 2 12z" fill="#16A34A"/><path d="M2 12l4-5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+              LIFESTYLE
+            </div>
+            <p class="card-info-text">なんば・天王寺・梅田エリアに飲食店が集積。大阪城公園・天王寺公園・長居公園など大型緑地も市内各地に分布し、週末のお出かけに困らない。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#EDE9FE;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7.5L5 11.5V9.5H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z" fill="#7C3AED"/><line x1="4.5" y1="5.5" x2="9.5" y2="5.5" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="7.2" x2="8" y2="7.2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            VOICES
+          </div>
+          <div class="voice-slider">
+            <div class="voice-slide active">
+              <p class="card-voice-text">昔ながらの雰囲気と都会の便利さが共存していて、そのバランスが絶妙。梅田もなんばも、新大阪も関空も1本で行ける。住み始めたことに後悔は1つもないです。</p>
+              <p class="card-voice-name">まおまおさん・30代・天王寺区在住 2年目</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">新大阪まで徒歩15分、阪急の駅まで徒歩8分。出張が多い自分にはこれ以上ない環境。飲食店の誘惑が少ないエリアなので自炊が増えて、生活コストが自然と下がった。</p>
+              <p class="card-voice-name">mkさん・40代・大阪市内在住 2年目</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">駅距離・学校区・資産価値・周辺施設の4つをすべてチェックした。梅田まで約1.2kmのエリアで、資産価値の面でも選んで正解でした。</p>
+              <p class="card-voice-name">りままさん・40代・大阪市内在住 3年目</p>
+            </div>
+            <div class="voice-nav">
+              <button class="voice-btn voice-prev" aria-label="前へ"><svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg></button>
+              <div class="voice-dots">
+                <span class="v-dot active"></span>
+                <span class="v-dot"></span>
+                <span class="v-dot"></span>
+              </div>
+              <button class="voice-btn voice-next" aria-label="次へ"><svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="card-count-date">物件数：5月22日時点</p>
+        <a href="#" class="card-area-btn">
+          大阪市内エリアの物件を見る
+          <svg viewBox="0 0 14 14"><polyline points="3,7 11,7"/><polyline points="7,3 11,7 7,11"/></svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── 京都市内エリア ── -->
+    <article class="area-card fade">
+      <div class="card-head">
+        <div class="card-en">KYOTO CITY</div>
+        <div class="card-ja-row">
+          <span class="card-ja">京都市内エリア</span>
+          <span class="card-count"><span class="num">4</span>件</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#FDE8E8;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5a3.5 3.5 0 0 0-3.5 3.5c0 2.6 3.5 6.5 3.5 6.5s3.5-3.9 3.5-6.5A3.5 3.5 0 0 0 7 1.5z" fill="#E83535"/><circle cx="7" cy="5" r="1.3" fill="white"/></svg>
+            </span>
+            AREA FEATURES
+          </div>
+          <div class="card-badges">
+            <span class="badge" style="background:#FEF3C7;color:#92400E">世界遺産17件</span>
+            <span class="badge" style="background:#DCFCE7;color:#166534">待機児童ゼロ（10年連続）</span>
+            <span class="badge" style="background:#EDE9FE;color:#5B21B6">大学・短大38校以上</span>
+            <span class="badge" style="background:#DBEAFE;color:#1E40AF">大阪まで29分</span>
+            <span class="badge" style="background:#F0FDF4;color:#14532D">自転車通勤圏</span>
+          </div>
+        </div>
+        <p class="card-feature-text">世界遺産17件が日常風景。大阪梅田まで新快速29分。景観条例で守られた街並みが将来の資産価値も下支え。保育所待機児童ゼロを10年連続で達成。</p>
+        <div class="card-info-grid">
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#EFF6FF;">
+                <svg viewBox="0 0 14 14" fill="none"><polygon points="7,2 13,5.5 7,9 1,5.5" fill="#3B82F6"/><path d="M4 7v3c1 1 1.8 1.3 3 1.3s2-.3 3-1.3V7" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+              </span>
+              EDUCATION
+            </div>
+            <p class="card-info-text">保育所待機児童ゼロを継続達成。京大・同志社・立命館など大学・短大が多数集積する学術都市。38校以上の高等教育機関が通学圏内に揃う。</p>
+          </div>
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#F0FDF4;">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2 12c1-4 3.5-6 7.5-7C8.5 8.5 6 11 2 12z" fill="#16A34A"/><path d="M2 12l4-5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+              LIFESTYLE
+            </div>
+            <p class="card-info-text">錦市場・河原町エリアを中心に老舗から新進気鋭の飲食店まで多彩。地蔵盆など地域行事も根付き、コミュニティに溶け込みやすい環境。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#EDE9FE;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7.5L5 11.5V9.5H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z" fill="#7C3AED"/><line x1="4.5" y1="5.5" x2="9.5" y2="5.5" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="7.2" x2="8" y2="7.2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            VOICES
+          </div>
+          <div class="voice-slider">
+            <div class="voice-slide active">
+              <p class="card-voice-text">賃貸は毎月家賃を払っても何も残らないけど、分譲なら支払いが資産になる。子どもが生まれたとき、この考えがはっきりと形になって購入を決意しました。月々の返済は管理費込みで7万円台。</p>
+              <p class="card-voice-name">ねねさん・40代・京都市在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">やっぱり駅徒歩5分のこだわりを最後まで捨てられなかった（笑）。今のエリアは、駅・スーパー（複数）・ドラッグストアがすべて徒歩圏内で、日常の不便がほぼゼロです。</p>
+              <p class="card-voice-name">ねねさん・40代・京都市在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">細かいネガティブより"エリアの総合点"で選ぶことをおすすめします。住んでみて初めてわかることは必ずあると思うので。私自身は総合的に大満足です。</p>
+              <p class="card-voice-name">ねねさん・40代・京都市在住</p>
+            </div>
+            <div class="voice-nav">
+              <button class="voice-btn voice-prev" aria-label="前へ"><svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg></button>
+              <div class="voice-dots">
+                <span class="v-dot active"></span>
+                <span class="v-dot"></span>
+                <span class="v-dot"></span>
+              </div>
+              <button class="voice-btn voice-next" aria-label="次へ"><svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="card-count-date">物件数：5月22日時点</p>
+        <a href="#" class="card-area-btn">
+          京都市内エリアの物件を見る
+          <svg viewBox="0 0 14 14"><polyline points="3,7 11,7"/><polyline points="7,3 11,7 7,11"/></svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── 琵琶湖南東エリア ── -->
+    <article class="area-card fade">
+      <div class="card-head">
+        <div class="card-en">BIWAKO NANTO</div>
+        <div class="card-ja-row">
+          <span class="card-ja">琵琶湖南東エリア</span>
+          <span class="card-count"><span class="num">4</span>件</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#FDE8E8;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1.5a3.5 3.5 0 0 0-3.5 3.5c0 2.6 3.5 6.5 3.5 6.5s3.5-3.9 3.5-6.5A3.5 3.5 0 0 0 7 1.5z" fill="#E83535"/><circle cx="7" cy="5" r="1.3" fill="white"/></svg>
+            </span>
+            AREA FEATURES
+          </div>
+          <div class="card-badges">
+            <span class="badge" style="background:#DBEAFE;color:#1E40AF">京都駅まで9分</span>
+            <span class="badge" style="background:#D1FAE5;color:#065F46">同予算で広い住まい</span>
+            <span class="badge" style="background:#ECFEFF;color:#155E75">琵琶湖が日常風景</span>
+            <span class="badge" style="background:#FEF9C3;color:#713F12">都会と田舎のちょうどいい</span>
+            <span class="badge" style="background:#EDE9FE;color:#5B21B6">大阪駅まで38分</span>
+          </div>
+        </div>
+        <p class="card-feature-text">京都駅まで新快速9分・大阪駅まで38分。同じ予算で京都比約3倍の広さを実現。日本最大の湖・琵琶湖が日常風景に広がる、都会と自然のちょうどいいエリア。</p>
+        <div class="card-info-grid">
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#EFF6FF;">
+                <svg viewBox="0 0 14 14" fill="none"><polygon points="7,2 13,5.5 7,9 1,5.5" fill="#3B82F6"/><path d="M4 7v3c1 1 1.8 1.3 3 1.3s2-.3 3-1.3V7" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+              </span>
+              EDUCATION
+            </div>
+            <p class="card-info-text">膳所エリアに滋賀大学附属学校（幼・小・中）が徒歩8分圏内。瀬田エリアは小学校3校に拡充。子どもの医療費助成制度が充実（大津市）。</p>
+          </div>
+          <div class="card-info-box">
+            <div class="card-info-label">
+              <span class="s-icon" style="background:#F0FDF4;">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2 12c1-4 3.5-6 7.5-7C8.5 8.5 6 11 2 12z" fill="#16A34A"/><path d="M2 12l4-5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </span>
+              LIFESTYLE
+            </div>
+            <p class="card-info-text">膳所エリアはOh!Me大津テラスが徒歩圏。小児科・クリニックが徒歩圏に複数あり、市立大津市民病院・市立総合医療センターも近接。週末は琵琶湖畔の散歩も。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-feature-label">
+            <span class="s-icon" style="background:#EDE9FE;">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H7.5L5 11.5V9.5H3a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z" fill="#7C3AED"/><line x1="4.5" y1="5.5" x2="9.5" y2="5.5" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="4.5" y1="7.2" x2="8" y2="7.2" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </span>
+            VOICES
+          </div>
+          <div class="voice-slider">
+            <div class="voice-slide active">
+              <p class="card-voice-text">京都・大阪への抜群のアクセスも魅力で、京都駅まで電車で約10分、大阪の職場まで座って通勤できるなど、都市部へのアクセスが非常に良好です。治安が良く落ち着いた住環境で、子どもを安心して育てられる穏やかな環境です。</p>
+              <p class="card-voice-name">N.Mさん・40代・大津市在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">都会すぎず田舎すぎない絶妙な環境で、大阪や京都など都心へも気軽に出られる点も気に入っています。この街で育った娘が「離れたくない」と言ってくれるほど、世代を超えて愛される地域だと感じています。</p>
+              <p class="card-voice-name">T.Oさん・60代・大津市在住</p>
+            </div>
+            <div class="voice-slide">
+              <p class="card-voice-text">購入前に近隣の賃貸で暮らし、エリアの魅力を実感し、他のエリアは検討せず琵琶湖南東エリアに永住することを決意しました。子供の医療費助成制度が充実しており、経済的な負担が少ないことも魅力です。</p>
+              <p class="card-voice-name">K.Nさん・30代・大津市在住</p>
+            </div>
+            <div class="voice-nav">
+              <button class="voice-btn voice-prev" aria-label="前へ"><svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg></button>
+              <div class="voice-dots">
+                <span class="v-dot active"></span>
+                <span class="v-dot"></span>
+                <span class="v-dot"></span>
+              </div>
+              <button class="voice-btn voice-next" aria-label="次へ"><svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <p class="card-count-date">物件数：5月22日時点</p>
+        <a href="https://sumumu.life/konan" target="_blank" rel="noopener noreferrer" class="card-area-btn">
+          琵琶湖南東エリアの物件を見る
+          <svg viewBox="0 0 14 14"><polyline points="3,7 11,7"/><polyline points="7,3 11,7 7,11"/></svg>
+        </a>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<!-- ══ JOIN THE COMMUNITY ════════════════════════════ -->
+<section class="sns-sec fade">
+  <div class="sns-inner">
+    <p class="sns-en">JOIN THE<br>COMMUNITY</p>
+    <p class="sns-ja">まずはLINEから。無料で参加できます。</p>
+    <div class="sns-btns">
+      <a href="https://lhcn.li/line/source/666a4239e47623e6c8f711c7" target="_blank" rel="noopener noreferrer" class="btn-line-big">
+        すむむ。に参加する
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 230" height="28" aria-label="すむむ。">
+            <defs><style>.fst0mn{fill:#E83535}</style></defs>
+            <g fill="white" fill-rule="evenodd">
+              <path fill-rule="evenodd" d="M354.2,224.4c-12.7,0-23.1-10.3-23.1-23.1s10.3-23.1,23.1-23.1,23.1,10.3,23.1,23.1-10.3,23.1-23.1,23.1ZM354.2,194.8c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5,6.5-2.9,6.5-6.5-2.9-6.5-6.5-6.5Z"/>
+              <path fill-rule="evenodd" d="M38.4,202.3c.6-.1,1.1.6.6,1.1-1,1.1-2.2,2.4-2.8,3.1-3.4,4-3.9,9.9,0,13.8,3.5,3.5,10.3,4,13.8,0,13.1-15.1,13.3-34.5,12.5-53.5-.4-8.3-1-16.7-1.8-25,0-1.1.8-2.1,1.9-2.1h15.3c5.8,0,10.4-5.1,9.6-11-.6-4.9-5-8.5-10-8.5h-16.3c-2.4,0-3.2-.7-3.3-1.6-.6-3.9-.7-7.9-1.8-11.7-1.5-5.5-6.5-8.4-11.6-7.2-6.3,1.5-8,7.2-7.2,12.4.3,2,.6,4,.9,6s-.7,2.1-1.9,2.1H15.7c-4.9,0-9.4,3.6-10,8.5-.7,5.9,3.9,11,9.6,11h23.9c1,0,1.8.7,1.9,1.7.2,2.1.5,4.3.7,6.4s-.8,1.8-1.8,1.6c-2.8-.6-5.7-.8-8.5-.4-9,1.1-17.2,7.1-21,15.3-3.9,8.2-3.2,18.3,1.6,25.9,4.9,7.6,13.8,12.8,22.8,12.5,1.4,0,2.6-.2,3.6-.4h0ZM43.2,180.1c-.7,1.5-2.2,2.7-3.6,3.5-1.6.8-3.4,1.2-5.2,1-2.4-.2-4.8-1.4-6.3-3.4-1.9-2.5-2.2-6.2-.8-9.1,1.3-2.9,4.2-4.7,7.2-5.2,2.7-.4,6.2.2,8,3,1.8,2.7,2.4,7,.8,10.2h-.1Z"/>
+              <path fill-rule="evenodd" d="M182.1,186.5c-4.4-1.2-9.4,1-11.5,6.5-3.1,8.2-9.6,12.7-17.6,10.5s-9.5-17.9-8.4-27.1c2-16.7,3.4-33.4,3.9-50.1,0-.9.7-1.5,1.6-1.5h14c5.1,0,9.7-3.7,10.2-8.7.6-5.8-4-10.7-9.7-10.7h-14.4c-.9,0-1.6-.7-1.6-1.6,0-5.1-.3-10.2-.6-15.4-.7-11.9-19.4-12-18.7,0,.3,5.1.5,10.2.6,15.3,0,.9-.7,1.6-1.6,1.6h-12.3c-5.1,0-9.7,3.7-10.2,8.7-.6,5.8,4,10.7,9.7,10.7h12.8c.9,0,1.6.7,1.6,1.6-.2,6.4-.4,11.5-.9,17.9,0,1.1-.6,2-1.4,2.6-1.5.9-4,.6-7.2.9-4.8.4-8.2,1.4-11.7,3.4-13.3,7.6-18.2,26.7-11.2,40.1,5.4,10.4,17.7,15.7,29,14.1,1.3-.2,2.5.5,3.1,1.6,5.3,9.9,15.2,16.7,27.3,17.2,15.2.7,29.4-11.4,31.6-26.3.7-5-1.2-10-6.5-11.5v.2ZM129.1,179c-.5,2.1-1.5,4-3.2,5.4-3,2.4-7.8,2.2-10.6-.5-2.4-2.3-3.2-6-2.6-9.3.4-2.5,1.5-5,3.4-6.7,3.5-3.2,9.3-3,11.8,1.2,1,1.7,1.5,3.6,1.6,5.6,0,1.4,0,2.9-.4,4.3h0Z"/>
+              <path d="M297.9,146.9c1.8,3.8,3.9,8,7.8,9.6,4,1.6,9.1-.6,10.7-4.6,1.7-4.4-.3-9.2-2-13.6-1.2-3.2-3-6.9-4.7-10.3-1.9-3.6-4.7-8.3-9-9s-8.1,1-9,5.4c-1.3,6.3,2.6,14.8,6.3,22.5h0Z"/>
+              <path fill-rule="evenodd" d="M309.6,187.8c-.3-5.7-4.6-9.6-9.4-9.7-4.9,0-9.3,3.1-9.3,9.7s-1.3,13.5-7.7,16.5c-3.7,1.8-8.9,1.5-12.7,0-12.2-5-10.3-20.9-10.5-32.3l-.8-59.3c0-1.1.8-1.9,1.9-1.9h10.8c5.1,0,9.7-3.7,10.2-8.7.6-5.8-4-10.7-9.7-10.7h-11.6c-1,0-1.9-.8-1.9-1.9v-12.9c0-4.9-3.5-9.4-8.4-9.8-5.6-.6-10.3,3.9-10.3,9.3v13.4c0,1-.8,1.9-1.8,1.9h-14.4c-5.1,0-9.7,3.7-10.2,8.7-.6,5.8,4,10.7,9.7,10.7h15.2c1,0,1.9.8,1.9,1.9,0,3.2,0,6.4.1,9.5,0,1.2-1,2.1-2.3,2-5.2-.5-10.6.6-15.1,3-8.4,4.6-14.1,13.5-15.5,23-1.7,11.5,3.1,24,12.6,30.8,5.5,3.9,12.5,5.6,19.2,4.9,1.1-.1,2.1.7,2.2,1.8.2,2.1.4,4.1.8,6.2,2.9,17.5,18.3,31.8,36.6,30.4,19.1-1.5,31.5-18,30.3-36.5h.1ZM235.5,165.8c-3.7.2-7.1-1.6-8.7-4.9-1.6-3.3-1.5-7.3-.2-10.8,1-2.7,3.3-5.2,5.9-6.2,3-1.2,6.9-.7,9.4,2,2.9,3.1,3.7,8.3,2.6,12.6-1.4,5.2-5.4,7.1-8.9,7.3h-.1Z"/>
+              <path d="M173.7,158.5s-4.3-8.8-2-14.8c1.1-2.8,3.6-4.5,6.3-4.8,3.4-.4,6.4.7,8.9,4.1,3.9,5.4,8.8,16.2,6.8,23-.9,3-2.7,5.2-5.6,5.9-3.4.9-6.8-.3-9-2.9-2.1-2.3-4.4-8.2-5.4-10.6h0Z"/>
+              <path d="M22.5,9.9c-1.2,2.9-2.6,6-4.3,8.9v32.2h-5.2v-24.3c-1.2,1.6-2.5,3-3.8,4.3-.5-1.3-1.9-4.3-2.9-5.6,4.4-4.1,8.6-10.7,11.1-17.2l5.1,1.7ZM50.3,44.5v5.2h-29.7v-5.2h12.2v-9.2h-9.7v-5.2h9.7v-8h-11.2v-5.2h13.1c-2.3-1.7-5.2-3.7-7.7-5.1l3.6-3.9c3.4,1.8,8.1,4.6,10.4,6.7l-2,2.3h10.5v5.2h-11.2v8h9.9v5.2h-9.9v9.2h11.9Z"/>
+              <path d="M69.2,12.5c2.6,0,7.5-.2,9.7-.4,1.1,0,2.3-.3,3.1-.6l3.7,2.9c-.6.7-1.2,1.3-1.6,1.9-1.2,2-2.9,6-4.6,9.9,3.6.6,7,1.7,10,2.9,0-.6,0-1.1.1-1.6.1-1.8.1-3.6,0-5l6,.7c-.2,3.1-.4,5.9-.9,8.5,1.9,1.1,3.6,2.2,4.9,3.1l-2.7,6.4c-1.2-1.1-2.5-2.2-4-3.2-2,5.2-5.5,9.2-11.7,12.5l-4.9-4c6.9-3,10.2-7.4,11.7-11.5-3.3-1.8-6.9-3.2-10.9-3.7-1.7,3.9-3.6,8.5-5.2,11-1.8,2.8-4,4-7.2,4s-7.1-2.8-7.1-7.5c0-7.1,6.5-12.6,15.7-13,1.3-3,2.6-6.2,3.7-8.3-1.8,0-5.8.2-7.9.4-.9,0-2.5.2-3.7.4l-.2-5.9c1.2.1,2.8.2,3.8.2ZM65.1,40.2c.9,0,1.6-.5,2.4-1.6,1.2-1.7,2.4-4.6,3.7-7.5-5.2.8-8.1,3.9-8.1,6.8s.9,2.3,1.9,2.3Z"/>
+              <path d="M141.7,22.8c1.9,2.6,4.5,4.8,7.6,6-1.2,1-2.7,2.9-3.5,4.1-3.5-1.7-6.3-4.7-8.3-8.2-1.4,2.3-3.5,4.6-6.7,6.4h11.9v19.8h-5.6v-1.3h-19.9v1.5h-5.3v-19.5c-.8.6-1.7,1.1-2.5,1.6-.7-1.1-2.4-2.8-3.6-3.7,3.9-1.9,6.2-4.3,7.4-6.7h-6.4v-4.3h7.8c.1-.9.2-1.8.2-2.6h-6.5v-4.1h6.5v-3.6h5.2v3.6h5.5v4.1h-5.5c0,.9,0,1.7-.2,2.6h6.3v4.3h-6.1c2,1.5,4.4,3.2,5.7,4.3l-3.5,3.7c-1.2-1.1-3.2-2.9-5.2-4.4-1.1,1.7-2.5,3.3-4.5,4.7h16c-.8-1.1-1.9-2.3-2.9-2.9,3.7-1.4,5.8-3.3,7-5.4h-5.2v-4.3h6.8c.1-.9.2-1.7.2-2.5h0c0-.1-6.3-.1-6.3-.1v-4.1h6.3v-3.6h5.2v3.6h6.9v4.1h-6.9v.2c0,.8,0,1.6-.1,2.4h8.6v4.3h-6.4ZM137.2,35.7h-19.9v2.6h19.9v-2.6ZM137.2,45.1v-2.9h-19.9v2.9h19.9Z"/>
+              <path d="M183.8,26.7c-2.1,1.8-6.4,5.8-7.5,6.9.4,0,1.2.1,1.7.3,1.3.4,2.2,1.4,2.8,3.1.4,1.2.9,3,1.3,4.2.4,1.4,1.4,2.2,3.2,2.2,3.5,0,6.7-.4,9-.8l-.4,6c-1.9.4-6.6.7-9,.7-4.4,0-6.7-1-7.9-4-.5-1.4-1-3.5-1.3-4.7-.5-1.6-1.5-2.2-2.4-2.2s-1.9.7-3,1.8c-1.6,1.6-5,5.4-8.2,9.4l-5.4-3.8c.8-.7,1.9-1.7,3.2-2.9,2.3-2.4,11.8-11.8,16-16.2-3.2,0-8.7.6-11.4.8-1.6.1-3,.4-4,.5l-.6-6.3c1.1,0,2.7.2,4.4.1,2.2,0,12.6-.5,16.4-1,.9,0,2.1-.3,2.6-.5l3.4,3.8c-1.2.8-2.2,1.7-3,2.3ZM185.2,12l-.7,5.4c-4.8-.4-13.4-1.4-18.9-2.3l.9-5.3c5.2,1,14,1.9,18.8,2.3Z"/>
+              <path d="M219.5,16.3c2.3-.4,4.4-.9,6.2-1.5l.2,5.3c-2.1.6-5,1.2-8.1,1.6-2.2,6.4-6.1,14.5-9.8,19.7l-5.6-2.9c3.6-4.5,7.4-11.3,9.4-16.2-.8,0-1.6,0-2.4,0-1.9,0-3.8,0-5.8-.2l-.4-5.3c2,.2,4.4.3,6.1.3s2.8,0,4.2-.2c.6-2.5,1.2-5.3,1.2-7.7l6.3.6c-.4,1.5-1,3.8-1.7,6.3ZM232,30.2c0,1.3.2,3.5.3,5.8,4,1.5,7.2,3.8,9.5,5.9l-3.1,4.9c-1.6-1.5-3.7-3.4-6.2-4.9v.5c0,4.3-2.3,7.6-8.9,7.6s-10.2-2.5-10.2-7.6,3.8-8,10.2-8,2.1,0,3.2.2c-.2-3.4-.4-7.5-.5-10.3h5.8c-.1,1.9,0,3.9,0,5.9ZM222.8,44.7c3.2,0,4.1-1.7,4.1-4.3v-.9c-1.2-.3-2.4-.5-3.7-.5-2.7,0-4.4,1.2-4.4,2.8s1.4,2.9,4,2.9ZM228.8,20.3l2.9-4.6c3.3,1.4,9,4.6,11.4,6.3l-3.3,4.8c-2.7-2.1-7.9-5.1-11-6.5Z"/>
+              <path d="M260,30.1c4.2-3,8.7-4.4,13.6-4.4,8.1,0,12.7,5,12.7,10.5,0,8.4-6.6,14.8-25.8,13.2l-1.7-6c13.8,1.9,21.1-1.5,21.1-7.3s-2.9-5.2-6.9-5.2-9.9,1.9-12.8,5.4c-.8,1-1.3,1.7-1.7,2.7l-5.3-1.3c.9-4.5,2-13.5,2.3-19.2l6.2.9c-.6,2.5-1.4,8.1-1.7,10.8ZM279.8,13.6l-1.4,5.6c-4.6-.6-14.9-2.8-18.5-3.7l1.5-5.5c4.4,1.4,14.4,3.1,18.4,3.6Z"/>
+            </g>
+            <path class="fst0mn" d="M390.4,68.9c-6.7-14.7-21.5-23.2-36.3-23.3-14.8,0-29.6,8.6-36.3,23.3-6,13.2-4.4,29.1,1.9,42.1,4.3,8.9,10.5,16.6,16.1,24.7,5.1,7.3,11.6,15.1,16.1,23.1.9,1.6,3.3,1.6,4.2,0,4.5-8,11.1-15.8,16.1-23.1,5.6-8.1,11.8-15.8,16.1-24.7,6.3-13.1,7.9-28.9,1.9-42.1h.2ZM354.2,106c-10.8,0-19.5-8.7-19.5-19.5s8.7-19.5,19.5-19.5,19.5,8.7,19.5,19.5-8.7,19.5-19.5,19.5Z"/>
+          </svg>
+        </div>
+        <p class="footer-tagline">すべての人に、<br>理想の住み替えを。</p>
+        <div class="footer-sns">
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://lhcn.li/line/source/666a4239e47623e6c8f711c7" target="_blank" rel="noopener noreferrer" aria-label="LINE">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.8 2 10.5c0 2.9 1.6 5.4 4.1 7l-1 3.7 4.2-2.2c.9.2 1.8.3 2.7.3 5.52 0 10-3.8 10-8.5S17.52 2 12 2z"/></svg>
+          </a>
+        </div>
+      </div>
+      <nav class="footer-nav-flat">
+        <a href="sumumu-main.html">トップ</a>
+        <a href="sumumu-areas.html">注目のエリア</a>
+        <a href="sumumu-main.html#services">すむむ。のサービス</a>
+        <a href="sumumu-main.html#voices">先輩の声</a>
+        <a href="sumumu-main.html#youtube">YouTube</a>
+        <a href="sumumu-main.html#instagram">Instagram</a>
+      </nav>
+    </div>
+    <div class="footer-line"></div>
+    <div class="footer-bottom">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;">
+        <img src="images/haseko-logo.png" alt="長谷工グループ" style="height:36px;width:auto;opacity:0.7;">
+        <div class="footer-legal">
+          <a href="https://www.succeed-inc.co.jp/" target="_blank" rel="noopener">運営会社：株式会社サクシード（長谷工グループ）</a>
+          <a href="https://www.succeed-inc.co.jp/external-transmission/" target="_blank" rel="noopener">利用者情報の外部送信について</a>
+          <a href="https://sumumu.life/socialmedia" target="_blank" rel="noopener">ソーシャルメディアガイドライン</a>
+          <a href="https://www.succeed-inc.co.jp/privacy/" target="_blank" rel="noopener">個人情報保護方針</a>
+          <a href="https://sumumu.life/terms" target="_blank" rel="noopener">運営会社・サイト利用について</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Hamburger
+const hambBtn = document.getElementById('hambBtn');
+const mobNav  = document.getElementById('mobNav');
+if (hambBtn && mobNav) {
+  hambBtn.addEventListener('click', function() {
+    this.classList.toggle('open');
+    mobNav.classList.toggle('open');
+  });
+}
+
+// Voice sliders
+document.querySelectorAll('.voice-slider').forEach(function(slider) {
+  var slides = Array.from(slider.querySelectorAll('.voice-slide'));
+  var dots   = Array.from(slider.querySelectorAll('.v-dot'));
+  var cur = 0;
+
+  function go(idx) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (idx + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+  }
+
+  slider.querySelector('.voice-prev').addEventListener('click', function() { go(cur - 1); });
+  slider.querySelector('.voice-next').addEventListener('click', function() { go(cur + 1); });
+  dots.forEach(function(dot, i) { dot.addEventListener('click', function() { go(i); }); });
+});
+
+// Fade in on scroll
+const fades = document.querySelectorAll('.fade');
+const io = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e, i) {
+    if (e.isIntersecting) {
+      setTimeout(function() { e.target.classList.add('visible'); }, i * 100);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+fades.forEach(function(el) { io.observe(el); });
+</script>
+</body>
+</html>
