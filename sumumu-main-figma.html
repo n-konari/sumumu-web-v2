@@ -7,6 +7,11 @@
 <style>
   .hero-area-panel { transform: translateX(0) !important; }
   .hero-overlay { display: block !important; opacity: 1 !important; }
+  /* 先輩の声：スクロール解除・全件表示 */
+  .hap-voices-wrap { flex: none !important; min-height: unset !important; overflow: visible !important; }
+  .hap-voices-grid { overflow: visible !important; min-height: unset !important; flex: none !important; grid-template-columns: 1fr !important; }
+  .hap-inner { overflow: visible !important; min-height: unset !important; }
+  .hero-area-panel { overflow: visible !important; height: auto !important; }
 </style>
 <title>すむむ。| 住み替えコミュニティ＋物件検索</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1963,7 +1968,7 @@ img { display: block; max-width: 100%; }
         <!-- ⑤ 先輩の声 -->
         <div class="hap-voices-wrap">
           <p class="hap-sec-label">VOICE</p>
-          <div class="hap-voices-grid" id="hapVoices" style="grid-template-columns:repeat(5,1fr)">
+          <div class="hap-voices-grid" id="hapVoices">
             <div class="hap-voice-card"><p class="hap-voice-text">大阪は治安が悪いイメージでしたが、北摂は転勤者が多く安心して暮らせる。3年住んで、都会から離れていてうるさくないのに近くに大型商業施設があって買い物にも困らない。</p><p class="hap-voice-name">けめこさん・30代・豊中市</p></div>
             <div class="hap-voice-card"><p class="hap-voice-text">大阪市内では他の人がエレベーターにいたら別の方に乗るくらい交流がなかった。箕面に移り住んでからは、すれ違う度にご挨拶がある。それがちょっと嬉しいです。</p><p class="hap-voice-name">りんごさん・30代・箕面市彩都</p></div>
             <div class="hap-voice-card"><p class="hap-voice-text">吹田は沿線によって雰囲気がかなり違います。阪急千里線沿いは緑が多く落ち着いた住宅街。最近はJR岸辺〜千里丘の再開発も進み、健都エリアなど新しい子育て世帯も増えています。</p><p class="hap-voice-name">りこさん・40代・北摂JR沿線</p></div>
