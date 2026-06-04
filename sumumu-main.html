@@ -451,6 +451,113 @@ img { display: block; max-width: 100%; }
   color: #9A8E85;
   text-align: right;
 }
+
+/* ─── MINI JAPAN MAP ─────────────────────────── */
+.mini-japan-wrap {
+  position: absolute;
+  bottom: 36px;
+  left: 12px;
+  width: 140px;
+  background: rgba(255,255,255,0.93);
+  border: 1.5px solid rgba(232,53,53,0.3);
+  border-radius: 12px;
+  padding: 8px 8px 6px;
+  cursor: pointer;
+  z-index: 15;
+  transition: box-shadow 0.2s, transform 0.18s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  outline: none;
+}
+.mini-japan-wrap:hover, .mini-japan-wrap:focus-visible {
+  box-shadow: 0 4px 16px rgba(232,53,53,0.28);
+  transform: scale(1.04);
+}
+.mini-japan-lbl {
+  font-size: 10px;
+  color: var(--gray-mid);
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.mini-japan-svg { width: 100%; height: auto; display: block; }
+.mini-japan-hint {
+  font-size: 10px;
+  color: var(--red);
+  text-align: center;
+  margin-top: 4px;
+}
+.mini-jpn-pref { fill: #D9D3C7; stroke: #F8F5EF; stroke-width: 0.8; }
+.mini-jpn-pref.kinki { fill: var(--red); }
+
+/* ─── JAPAN MAP MODAL ─────────────────────────── */
+.japan-modal-ov {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,26,0.65);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.japan-modal-ov.open { opacity: 1; pointer-events: all; }
+.japan-modal {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px 28px 22px;
+  max-width: 480px;
+  width: calc(100vw - 40px);
+  position: relative;
+  transform: scale(0.96) translateY(8px);
+  transition: transform 0.25s;
+  max-height: calc(100dvh - 60px);
+  overflow-y: auto;
+}
+.japan-modal-ov.open .japan-modal { transform: scale(1) translateY(0); }
+.japan-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.japan-modal-close:hover { background: var(--bg-warm); }
+.japan-modal-hd { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.japan-modal-en { font-family: var(--display); font-size: 28px; line-height: 1; color: var(--black); }
+.japan-modal-ja { font-size: 13px; color: var(--gray-mid); }
+.japan-modal-svg { width: 100%; height: auto; display: block; margin-bottom: 16px; }
+.jpn-pref { fill: #D9D3C7; stroke: #F8F5EF; stroke-width: 1.5; transition: fill 0.15s; }
+.jpn-pref.kinki { fill: rgba(232,53,53,0.28); cursor: pointer; }
+.jpn-pref.kinki:hover { fill: rgba(232,53,53,0.48); }
+.japan-modal-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.japan-modal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+.japan-modal-chip.active { background: var(--red); color: #fff; cursor: pointer; }
+.japan-modal-chip.inactive { background: var(--bg); color: var(--gray-mid); border-color: var(--gray-pale); cursor: default; }
+.japan-chip-badge { font-size: 9px; padding: 1px 5px; border-radius: 4px; background: var(--gray-pale); color: var(--gray-mid); }
+.japan-modal-note { font-size: 11px; color: var(--gray-mid); line-height: 1.7; }
+
 .pref { fill: #D9D3C7; stroke: #F8F5EF; stroke-width: 2.5; }
 .lake { fill: #9FC4D8; stroke: #F8F5EF; stroke-width: 1.5; }
 .pref-lbl {
@@ -1967,6 +2074,15 @@ img { display: block; max-width: 100%; }
         <span class="hero-vp-tag" id="heroVpTag"></span>
       </div>
 
+      <!-- Mini Japan Map inset -->
+      <div class="mini-japan-wrap" id="miniJapanWrap" role="button" tabindex="0" aria-label="エリアを変更する（クリックで日本地図を開く）">
+        <p class="mini-japan-lbl">現在のエリア</p>
+        <svg id="miniJapanSvg" class="mini-japan-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="180" height="180" fill="none"/>
+        </svg>
+        <p class="mini-japan-hint">▲ エリア変更</p>
+      </div>
+
       <p class="hero-map-hint"><span class="hero-map-hint-dot"></span>赤いピンにカーソルを合わせるとエリア情報が見られます</p>
       <svg id="kansaiGeoSvg" class="kansai-geo-svg" viewBox="0 0 640 540" xmlns="http://www.w3.org/2000/svg" aria-label="関西エリア地図">
         <rect width="640" height="540" fill="#B8D0E3" rx="12"/>
@@ -2815,6 +2931,224 @@ function setupHeroMapHover() {
     setupHeroMapHover();
     setupHeroAreaPanel();
 
+    // ── ミニ日本地図 & エリア選択モーダル ─────────────
+    (function(allFeatures) {
+      var KINKI = ['三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県'];
+      var NS2 = 'http://www.w3.org/2000/svg';
+      function isKinki(f) {
+        var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+        return KINKI.indexOf(n) !== -1;
+      }
+
+      // 小笠原諸島（東京都の遠隔島嶼・142°E付近）を描画から除去
+      allFeatures = allFeatures.map(function(f) {
+        var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+        if (n !== '東京都') return f;
+        var geo = f.geometry;
+        if (!geo || (geo.type !== 'MultiPolygon' && geo.type !== 'Polygon')) return f;
+        var polys = geo.type === 'MultiPolygon' ? geo.coordinates : [geo.coordinates];
+        var filtered = polys.filter(function(poly) {
+          var ring = poly[0];
+          var avgLon = ring.reduce(function(s,c){ return s + c[0]; }, 0) / ring.length;
+          return avgLon < 141.5;
+        });
+        if (!filtered.length) return f;
+        return Object.assign({}, f, { geometry: { type: 'MultiPolygon', coordinates: filtered } });
+      });
+
+      var allGeo = { type: 'FeatureCollection', features: allFeatures };
+
+      // ── ミニ地図描画（正方形・沖縄インセット付き） ─────
+      var miniSvg = document.getElementById('miniJapanSvg');
+      if (miniSvg) {
+        miniSvg.innerHTML = '';
+        var mW = 180, mH = 180;
+        var OKI_NAME = '沖縄県';
+        var mainlandFts = allFeatures.filter(function(f) {
+          var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+          return n !== OKI_NAME;
+        });
+        var okinawaFts = allFeatures.filter(function(f) {
+          var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+          return n === OKI_NAME;
+        });
+
+        // 本土（北海道〜九州）をSVG全体にフィット
+        var mainlandGeo = { type: 'FeatureCollection', features: mainlandFts };
+        var mProj = d3.geoMercator().fitExtent([[2, 2], [mW-2, mH-2]], mainlandGeo);
+        var mPathFn = d3.geoPath().projection(mProj);
+        mainlandFts.forEach(function(f) {
+          var dStr = mPathFn(f); if (!dStr) return;
+          var p = document.createElementNS(NS2, 'path');
+          p.setAttribute('d', dStr);
+          p.setAttribute('class', 'mini-jpn-pref' + (isKinki(f) ? ' kinki' : ''));
+          miniSvg.appendChild(p);
+        });
+
+        // 沖縄インセット（千葉県右下付近）
+        if (okinawaFts.length > 0) {
+          var iX = 112, iY = 116, iW = 64, iH = 40;
+          var bg = document.createElementNS(NS2, 'rect');
+          bg.setAttribute('x', iX); bg.setAttribute('y', iY);
+          bg.setAttribute('width', iW); bg.setAttribute('height', iH);
+          bg.setAttribute('fill', '#B8D0E3'); bg.setAttribute('rx', '3');
+          bg.setAttribute('stroke', '#c8c0b4'); bg.setAttribute('stroke-width', '0.8');
+          miniSvg.appendChild(bg);
+
+          var okiGeo = { type: 'FeatureCollection', features: okinawaFts };
+          var okiProj = d3.geoMercator().fitExtent([[iX+3, iY+3], [iX+iW-3, iY+iH-10]], okiGeo);
+          var okiPath = d3.geoPath().projection(okiProj);
+          okinawaFts.forEach(function(f) {
+            var dStr = okiPath(f); if (!dStr) return;
+            var p = document.createElementNS(NS2, 'path');
+            p.setAttribute('d', dStr);
+            p.setAttribute('class', 'mini-jpn-pref');
+            miniSvg.appendChild(p);
+          });
+
+          var okiLbl = document.createElementNS(NS2, 'text');
+          okiLbl.setAttribute('x', iX + iW / 2);
+          okiLbl.setAttribute('y', iY + iH - 2);
+          okiLbl.setAttribute('text-anchor', 'middle');
+          okiLbl.setAttribute('fill', '#9A8E85');
+          okiLbl.setAttribute('font-size', '7');
+          okiLbl.setAttribute('font-family', 'sans-serif');
+          okiLbl.textContent = '沖縄';
+          miniSvg.appendChild(okiLbl);
+        }
+      }
+
+      // ── モーダル地図描画（正方形・沖縄インセット付き） ─
+      var modalSvg = document.getElementById('japanModalSvg');
+      if (modalSvg) {
+        modalSvg.innerHTML = '';
+        var vW = 380, vH = 380;
+        var mainlandFts2 = allFeatures.filter(function(f) {
+          var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+          return n !== OKI_NAME;
+        });
+        var okinawaFts2 = allFeatures.filter(function(f) {
+          var n = f.properties.nam_ja || f.properties.name_ja || f.properties.nam || '';
+          return n === OKI_NAME;
+        });
+
+        // 本土をSVG全体にフィット
+        var mainlandGeo2 = { type: 'FeatureCollection', features: mainlandFts2 };
+        var mProj2 = d3.geoMercator().fitExtent([[10, 10], [vW-10, vH-10]], mainlandGeo2);
+        var mPath2 = d3.geoPath().projection(mProj2);
+        mainlandFts2.forEach(function(f) {
+          var dStr = mPath2(f); if (!dStr) return;
+          var p = document.createElementNS(NS2, 'path');
+          p.setAttribute('d', dStr);
+          var kin = isKinki(f);
+          p.setAttribute('class', 'jpn-pref' + (kin ? ' kinki' : ''));
+          if (kin) {
+            p.addEventListener('click', function() {
+              document.getElementById('japanModalOv').classList.remove('open');
+            });
+          }
+          modalSvg.appendChild(p);
+        });
+
+        // 沖縄インセット（千葉県右下付近）
+        if (okinawaFts2.length > 0) {
+          var iX2 = 240, iY2 = 238, iW2 = 112, iH2 = 68;
+          var bg2 = document.createElementNS(NS2, 'rect');
+          bg2.setAttribute('x', iX2); bg2.setAttribute('y', iY2);
+          bg2.setAttribute('width', iW2); bg2.setAttribute('height', iH2);
+          bg2.setAttribute('fill', '#B8D0E3'); bg2.setAttribute('rx', '5');
+          bg2.setAttribute('stroke', '#c8c0b4'); bg2.setAttribute('stroke-width', '1');
+          modalSvg.appendChild(bg2);
+
+          var okiGeo2 = { type: 'FeatureCollection', features: okinawaFts2 };
+          var okiProj2 = d3.geoMercator().fitExtent([[iX2+5, iY2+5], [iX2+iW2-5, iY2+iH2-16]], okiGeo2);
+          var okiPath2 = d3.geoPath().projection(okiProj2);
+          okinawaFts2.forEach(function(f) {
+            var dStr = okiPath2(f); if (!dStr) return;
+            var p = document.createElementNS(NS2, 'path');
+            p.setAttribute('d', dStr);
+            p.setAttribute('class', 'jpn-pref');
+            modalSvg.appendChild(p);
+          });
+
+          var okiLbl2 = document.createElementNS(NS2, 'text');
+          okiLbl2.setAttribute('x', iX2 + iW2 / 2);
+          okiLbl2.setAttribute('y', iY2 + iH2 - 4);
+          okiLbl2.setAttribute('text-anchor', 'middle');
+          okiLbl2.setAttribute('fill', '#9A8E85');
+          okiLbl2.setAttribute('font-size', '11');
+          okiLbl2.setAttribute('font-family', 'sans-serif');
+          okiLbl2.textContent = '沖縄';
+          modalSvg.appendChild(okiLbl2);
+        }
+
+        // 「現在のエリア」ラベルを近畿の重心に表示
+        var kinkiFts = allFeatures.filter(isKinki);
+        var ctr = mPath2.centroid({ type: 'FeatureCollection', features: kinkiFts });
+        if (ctr && !isNaN(ctr[0])) {
+          var lbl = document.createElementNS(NS2, 'text');
+          lbl.setAttribute('x', ctr[0]);
+          lbl.setAttribute('y', ctr[1] + 4);
+          lbl.setAttribute('text-anchor', 'middle');
+          lbl.setAttribute('fill', '#E83535');
+          lbl.setAttribute('font-size', '10');
+          lbl.setAttribute('font-family', 'sans-serif');
+          lbl.setAttribute('font-weight', '700');
+          lbl.setAttribute('pointer-events', 'none');
+          lbl.textContent = '現在のエリア';
+          modalSvg.appendChild(lbl);
+        }
+      }
+
+      // ── 地域チップ ──────────────────────────────────
+      var REGIONS = [
+        { label: '近畿',   active: true },
+        { label: '関東',   active: false },
+        { label: '東海',   active: false },
+        { label: '九州',   active: false },
+        { label: '東北',   active: false },
+        { label: '北海道', active: false },
+        { label: '中国',   active: false },
+        { label: '四国',   active: false },
+        { label: '沖縄',   active: false },
+      ];
+      var chipsEl = document.getElementById('japanModalChips');
+      if (chipsEl) {
+        REGIONS.forEach(function(r) {
+          var chip = document.createElement('span');
+          chip.className = 'japan-modal-chip ' + (r.active ? 'active' : 'inactive');
+          chip.textContent = r.label;
+          if (!r.active) {
+            var badge = document.createElement('span');
+            badge.className = 'japan-chip-badge';
+            badge.textContent = '準備中';
+            chip.appendChild(badge);
+          } else {
+            chip.addEventListener('click', function() {
+              document.getElementById('japanModalOv').classList.remove('open');
+            });
+          }
+          chipsEl.appendChild(chip);
+        });
+      }
+
+      // ── モーダル開閉 ────────────────────────────────
+      var miniWrap   = document.getElementById('miniJapanWrap');
+      var modalOv    = document.getElementById('japanModalOv');
+      var modalClose = document.getElementById('japanModalClose');
+      if (miniWrap && modalOv) {
+        function openModal()  { modalOv.classList.add('open'); }
+        function closeModal() { modalOv.classList.remove('open'); }
+        miniWrap.addEventListener('click', openModal);
+        miniWrap.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
+        });
+        if (modalClose) modalClose.addEventListener('click', closeModal);
+        modalOv.addEventListener('click', function(e) { if (e.target === modalOv) closeModal(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+      }
+    })(geoAll.features);
+
   } catch(e) {
     console.warn('Kinki map load error:', e);
   }
@@ -2934,5 +3268,20 @@ document.querySelectorAll('.fade').forEach(function(el) { obs.observe(el); });
   updateActive();
 })();
 </script>
+
+<!-- ══ JAPAN AREA SELECT MODAL ════════════════════ -->
+<div class="japan-modal-ov" id="japanModalOv" role="dialog" aria-modal="true" aria-label="エリアを選ぶ">
+  <div class="japan-modal">
+    <button class="japan-modal-close" id="japanModalClose" aria-label="閉じる">✕</button>
+    <div class="japan-modal-hd">
+      <span class="japan-modal-en">AREA</span>
+      <span class="japan-modal-ja">エリアを選ぶ</span>
+    </div>
+    <svg id="japanModalSvg" class="japan-modal-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg" aria-label="エリア選択地図">
+    </svg>
+    <div class="japan-modal-chips" id="japanModalChips"></div>
+    <p class="japan-modal-note">※ 現在は関西・京滋エリアを中心にサービスを提供しています。他エリアは順次拡大予定です。</p>
+  </div>
+</div>
 </body>
 </html>
